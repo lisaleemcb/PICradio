@@ -1,6 +1,6 @@
 ; Lisa McBride & Jared Kofron
 ; PHYS 335 - PIC radio project
-; v0.1
+; v0.2
 
 ;includes and such
 	processor 16f84
@@ -16,10 +16,10 @@
 	org 0
 
 	goto initialize
-loop	movf M,0
+loop	movf M,0		; beginning of sine wave construction
 	addwf PHASEACC,1
 	
-	btfsc PHASEACC,7
+	btfsc PHASEACC,7	; checks the PHASEACC register quadrant
 	call MSB7Set
 
 	btfss PHASEACC,7
@@ -32,8 +32,8 @@ initialize:			; prepares PORTB for output, PORTA for input
 
 MSB7Set:
 	btfsc PHASEACC,6
-	goto MSB6Set
-	movlf 0x3F
+	goto MSB6Set		; PHASEACC is in Quadrant IV
+	movlf 0x3F		; PHASEACC is in Quadrant III
 	andwf PHASEACC,0
 	sublw 0x100
 	call lut
@@ -54,8 +54,8 @@ end	noop
 
 MSB7notSet:
 	btfsc PHASEACC,6
-	goto MSB6Set
-	movlf 0x3F
+	goto MSB6Set		; PHASEACC is in Quadrant II
+	movlf 0x3F		; PHASEACC is in Quadrant I
 	andwf PHASEACC,0
 	call lut
 	movwf PORTB
